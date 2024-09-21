@@ -1,33 +1,32 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
-
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// File untuk menyimpan jumlah pengunjung
-const countFilePath = path.join(__dirname, 'count.json');
-
-// Inisialisasi jumlah pengunjung
-if (!fs.existsSync(countFilePath)) {
-    fs.writeFileSync(countFilePath, JSON.stringify({ visits: 0 }));
-}
-
-// Middleware untuk menghitung pengunjung
-app.use((req, res, next) => {
-    const countData = JSON.parse(fs.readFileSync(countFilePath));
-    countData.visits += 1;
-    fs.writeFileSync(countFilePath, JSON.stringify(countData));
-    next();
-});
+let visitorCount = 0;
 
 // Endpoint untuk mendapatkan jumlah pengunjung
 app.get('/visitor-count', (req, res) => {
-    const countData = JSON.parse(fs.readFileSync(countFilePath));
-    res.json({ totalVisitors: countData.visits });
+    visitorCount++;
+    res.json({ totalVisitors: visitorCount });
 });
 
-// Jalankan server
+// Endpoint utama
+app.get('/', (req, res) => {
+    res.send(`
+        <h1>Welcome to Visitor Counter App</h1>
+        <p>Total Visitors: <span id="count"></span></p>
+        <script>
+            async function fetchVisitorCount() {
+                const response = await fetch('/visitor-count');
+                const data = await response.json();
+                document.getElementById('count').innerText = data.totalVisitors;
+            }
+
+            fetchVisitorCount();
+        </script>
+    `);
+});
+
 app.listen(PORT, () => {
-    console.log(`Server berjalan di http://localhost:${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
