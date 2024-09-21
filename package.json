@@ -2,9 +2,9 @@
   "name": "visitor-counter",
   "version": "1.0.0",
   "description": "A simple visitor counter API using Express",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node app.js"
   },
   "keywords": [
     "visitor",
@@ -12,7 +12,7 @@
     "api",
     "express"
   ],
-  "author": "Your Name",
+  "author": "Franky 404",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.3"
